@@ -40,4 +40,54 @@ public class NextBook {
 
         return Response.status(200).entity(output).build();
     }
+
+    @Path("/search")
+    @POST
+    @Produces("text/plain")
+    // Note I did not do all validation for these parameters, just the minimum
+    public Response searchDatabase (
+            @FormParam("bookTitle") String bookTitle,
+            @FormParam("bookId") String bookId
+    ) {
+        //String test = "Hello";
+        if (bookTitle != null && !bookTitle.isEmpty()) {
+            String output = queryBookByTitle(bookTitle, "\n");
+            return Response.status(200).entity(output).build();
+        } else if (bookId != null && !bookId.isEmpty()) {
+            // Convert to int
+            int id = Integer.parseInt(bookId);
+            String output = queryBookById(id);
+            return Response.status(200).entity(output).build();
+        }
+
+        return Response.status(200).entity("The search failed, please try again").build();
+    }
+
+    private String queryBookByTitle(String title, String lineBreak) {
+
+        BookDAO getBooks = new BookDAO();
+
+        List<Book> results = getBooks.findBookByTitle(title);
+
+        if (results == null) {
+            return "No books matching the search results were found";
+        }
+        String output = "The following books matched your request" + lineBreak;
+
+        for (Book book: results) {
+            output += book.toString() + lineBreak;
+        }
+
+        return output;
+    }
+
+
+    private String queryBookById(int id) {
+        BookDAO getBooks = new BookDAO();
+        Book book = getBooks.getBook(id);
+        if (book == null) {
+            return "No Search results for that ID";
+        }
+        return "The following results matched your query + \n" + book.toString();
+    }
 }

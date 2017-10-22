@@ -6,5 +6,7 @@
     <a href="jsp/bookId.jsp">Find book by id</a>
     <br/>
     <a href="jsp/author.jsp">Find author</a>
+    <br />
+<a href="/searchRequest">Search the database</a>
 </body>
 </html>
